@@ -128,3 +128,5 @@ firstPref votes = [( head (fst x), snd x)  | x <- votes]
 
 groupCand :: [([String], Int)] -> [[(String, Int)]]
 groupCand votes = group (sort (firstPref votes))
+
+adder votes = [( fst (head x), sum [snd y | y <- x ]) | x <- groupCand votes]
