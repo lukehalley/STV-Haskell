@@ -129,5 +129,8 @@ firstPref xs = [( head (fst x), snd x)  | x <- xs]
 groupCand :: [([String], Int)] -> [[(String, Int)]]
 groupCand xs = group (sort (firstPref xs))
 
-adder xs = [( fst (head x), sum [snd y | y <- x ]) | x <- groupCand xs]
+addWeights :: [([String], Int)] -> [(String, Int)]
+addWeights xs = [( fst (head x), sum [snd y | y <- x ]) | x <- groupCand xs]
+
+
 
