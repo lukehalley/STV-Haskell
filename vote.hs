@@ -67,9 +67,13 @@ votes = [
             (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight)
         ]
 
+
+
+
+
 firstVote = head votes
 
-seats = 5
+seats = 0
 
 candidates = length (fst (votes !! 1))
 
@@ -91,13 +95,6 @@ rmdups (x:xs) = x : filter (/= x) (rmdups xs)
 result :: Ord a => [a] -> [(Int, a)]
 result vs = sort [(count1 v vs, v) | v <- rmdups vs]
 
-ballots :: [[String]]
-ballots = [["Red","Green"],
-           ["Blue"],
-           ["Green","Red","Blue"],
-           ["Blue","Green","Red"],
-           ["Green"]]
-
 rmempty :: Eq a => [[a]] -> [[a]]
 rmempty = filter (/= [])
 
@@ -107,11 +104,27 @@ elim x = map (filter (/= x))
 rank :: Ord a => [[a]] -> [a]
 rank = map snd . result . map head
 
-winner' :: Ord a => [[a]] -> a
-winner' bs = case rank (rmempty bs) of
+winner :: Ord a => [[a]] -> a
+winner bs = case rank (rmempty bs) of
                 [c]    -> c
-                (c:cs) -> winner' (elim c bs)
+                (c:cs) -> winner (elim c bs)
 
 -- WORK
 
-whoWon = winner' (map fst votes)
+getRank = rank (map fst votes)
+
+-- main = do
+--     let firstWinner = winner (map fst votes)
+--     print firstWinner
+--     let currRank = rank (map fst votes)
+--     print currRank
+--     let flipper = reverse (rank (map fst votes))
+--     print flipper
+--     let actualWinner = head flipper
+--     print actualWinner
+
+firstPref :: [([String], Int)] -> [(String, Int)]
+firstPref votes = [( head (fst x), snd x)  | x <- votes]
+
+groupCand :: [([String], Int)] -> [[(String, Int)]]
+groupCand votes = group (sort (firstPref votes))
