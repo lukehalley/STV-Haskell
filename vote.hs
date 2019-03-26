@@ -1,97 +1,117 @@
-import Data.List(sort, group)
+import Data.List(sortBy, sort, group)
 import Data.Map (fromListWith, toList)
+import Data.Function (on)
+weight = 1000
 
--- List of 6 votes
+votes :: [([String], Int)]
 votes = [
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Daxter", "Sly Racoon","Rachet","Clank","Jak"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Daxter", "Clank","Rachet","Sly Racoon","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Sly Racoon","Jak","Daxter","Clank","Rachet"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000),
-            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], 1000),
-            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], 1000),
-            (["Jak","Daxter", "Rachet","Clank","Sly Racoon"], 1000),
-            (["Jak", "Clank","Rachet","Sly Racoon","Daxter"], 1000),
-            (["Jak","Daxter", "Clank","Rachet","Sly Racoon"], 1000),
-            (["Jak","Daxter", "Rachet","Clank","Sly Racoon"], 1000),
-            (["Daxter", "Rachet","Clank","Sly Racoon","Jak"], 1000),
-            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], 1000)
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Daxter", "Sly Racoon","Rachet","Clank","Jak"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Daxter", "Clank","Rachet","Sly Racoon","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Sly Racoon","Jak","Daxter","Clank","Rachet"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight),
+            (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
+            (["Clank","Rachet","Sly Racoon","Jak","Daxter"], weight),
+            (["Jak","Daxter", "Rachet","Clank","Sly Racoon"], weight),
+            (["Jak", "Clank","Rachet","Sly Racoon","Daxter"], weight),
+            (["Jak","Daxter", "Clank","Rachet","Sly Racoon"], weight),
+            (["Jak","Daxter", "Rachet","Clank","Sly Racoon"], weight),
+            (["Daxter", "Rachet","Clank","Sly Racoon","Jak"], weight),
+            (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight)
         ]
-
-pref1 (p1,p2,p3,p4,p5) = p1
-pref2 (p1,p2,p3,p4,p5) = p2
-pref3 (p1,p2,p3,p4,p5) = p3
-pref4 (p1,p2,p3,p4,p5) = p4
-pref5 (p1,p2,p3,p4,p5) = p5
 
 firstVote = head votes
 
-getQuota = (length votes `div` (5 + 1)) + 1
+seats = 5
 
-getFirstPref :: String -> Int  
-getFirstPref x = length [pref1 p | p <- votes, pref1 p == x]
+candidates = length (fst (votes !! 1))
 
-getSecondPref :: String -> Int  
-getSecondPref x = length [pref2 p | p <- votes, pref2 p == x]
+quota = ((length votes * weight) `div` (candidates + 1)) + 1
 
-getThirdPref :: String -> Int  
-getThirdPref x = length [pref3 p | p <- votes, pref3 p == x]
+count = length (fst (head votes))
 
-getFourthPref :: String -> Int  
-getFourthPref x = length [pref4 p | p <- votes, pref4 p == x]
+candVote xs n = sum [if x == n then 1 else 0 | x <- xs]
 
-getFifthPref :: String -> Int  
-getFifthPref x = length [pref5 p | p <- votes, pref5 p == x]
+-- First past the post
 
-slyVote = getFirstPref "Sly Racoon"
-rachetVote = getFirstPref "Rachet"
-daxterVote = getFirstPref "Daxter"
-clankVote = getFirstPref "Clank"
-jakVote = getFirstPref "Jak"
+count1 :: Eq a => a -> [a] -> Int
+count1 x = length . filter (== x)
+
+rmdups :: Eq a => [a] -> [a]
+rmdups []     = []
+rmdups (x:xs) = x : filter (/= x) (rmdups xs)
+
+result :: Ord a => [a] -> [(Int, a)]
+result vs = sort [(count1 v vs, v) | v <- rmdups vs]
+
+ballots :: [[String]]
+ballots = [["Red","Green"],
+           ["Blue"],
+           ["Green","Red","Blue"],
+           ["Blue","Green","Red"],
+           ["Green"]]
+
+rmempty :: Eq a => [[a]] -> [[a]]
+rmempty = filter (/= [])
+
+elim :: Eq a => a -> [[a]] -> [[a]]
+elim x = map (filter (/= x))
+
+rank :: Ord a => [[a]] -> [a]
+rank = map snd . result . map head
+
+winner' :: Ord a => [[a]] -> a
+winner' bs = case rank (rmempty bs) of
+                [c]    -> c
+                (c:cs) -> winner' (elim c bs)
+
+-- WORK
+
+whoWon = winner' (map fst votes)
