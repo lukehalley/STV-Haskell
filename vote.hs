@@ -124,9 +124,10 @@ getRank = rank (map fst votes)
 --     print actualWinner
 
 firstPref :: [([String], Int)] -> [(String, Int)]
-firstPref votes = [( head (fst x), snd x)  | x <- votes]
+firstPref xs = [( head (fst x), snd x)  | x <- xs]
 
 groupCand :: [([String], Int)] -> [[(String, Int)]]
-groupCand votes = group (sort (firstPref votes))
+groupCand xs = group (sort (firstPref xs))
 
-adder votes = [( fst (head x), sum [snd y | y <- x ]) | x <- groupCand votes]
+adder xs = [( fst (head x), sum [snd y | y <- x ]) | x <- groupCand xs]
+
