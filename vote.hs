@@ -132,5 +132,7 @@ groupCand xs = group (sort (firstPref xs))
 addWeights :: [([String], Int)] -> [(String, Int)]
 addWeights xs = [( fst (head x), sum [snd y | y <- x ]) | x <- groupCand xs]
 
+sortByWeight :: Ord b => [(a, b)] -> [(a, b)]
+sortByWeight = sortBy (flip compare `on` snd)
 
-
+collectedBallots = sortByWeight (addWeights votes)
