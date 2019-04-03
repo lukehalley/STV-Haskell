@@ -67,10 +67,6 @@ votes = [
             (["Sly Racoon","Rachet","Clank","Daxter","Jak"], weight)
         ]
 
-
-
-
-
 firstVote = head votes
 
 seats = 0
@@ -98,9 +94,6 @@ result vs = sort [(count1 v vs, v) | v <- rmdups vs]
 rmempty :: Eq a => [[a]] -> [[a]]
 rmempty = filter (/= [])
 
-elim :: Eq a => a -> [[a]] -> [[a]]
-elim x = map (filter (/= x))
-
 rank :: Ord a => [[a]] -> [a]
 rank = map snd . result . map head
 
@@ -123,6 +116,9 @@ getRank = rank (map fst votes)
 --     let actualWinner = head flipper
 --     print actualWinner
 
+elim :: Eq a => a -> [[a]] -> [[a]]
+elim x = map (filter (/= x))
+
 firstPref :: [([String], Int)] -> [(String, Int)]
 firstPref xs = [( head (fst x), snd x)  | x <- xs]
 
@@ -135,4 +131,16 @@ addWeights xs = [( fst (head x), sum [snd y | y <- x ]) | x <- groupCand xs]
 sortByWeight :: Ord b => [(a, b)] -> [(a, b)]
 sortByWeight = sortBy (flip compare `on` snd)
 
-collectedBallots = sortByWeight (addWeights votes)
+elimCand :: String -> [([String], Int)] -> [([String], Int)]
+elimCand cand [] = []
+elimCand cand (v:vs) = (filter (/= cand) (fst v), snd v ) : elimCand cand vs
+
+sortedVotes = sortByWeight (addWeights votes)
+
+firstElected = fst (head sortedVotes)
+
+-- If -1 that means we have an elected candidate
+-- if it was 0 that means we have to eleminate
+decide x
+    | x >= quota = -1
+    | otherwise = 0
