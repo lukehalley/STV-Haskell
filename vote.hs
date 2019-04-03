@@ -3,6 +3,18 @@ import Data.Map (fromListWith, toList)
 import Data.Function (on)
 weight = 1000
 
+elected :: [String]
+elected = []
+
+eleminated :: [String]
+eleminated = []
+
+stillRunning :: [String]
+stillRunning = []
+
+seats :: Int
+seats = 3
+
 votes :: [([String], Int)]
 votes = [
             (["Rachet","Clank","Sly Racoon","Jak","Daxter"], weight),
@@ -69,8 +81,6 @@ votes = [
 
 firstVote = head votes
 
-seats = 0
-
 candidates = length (fst (votes !! 1))
 
 quota = ((length votes * weight) `div` (candidates + 1)) + 1
@@ -79,45 +89,8 @@ count = length (fst (head votes))
 
 candVote xs n = sum [if x == n then 1 else 0 | x <- xs]
 
--- First past the post
-
-count1 :: Eq a => a -> [a] -> Int
-count1 x = length . filter (== x)
-
-rmdups :: Eq a => [a] -> [a]
-rmdups []     = []
-rmdups (x:xs) = x : filter (/= x) (rmdups xs)
-
-result :: Ord a => [a] -> [(Int, a)]
-result vs = sort [(count1 v vs, v) | v <- rmdups vs]
-
 rmempty :: Eq a => [[a]] -> [[a]]
 rmempty = filter (/= [])
-
-rank :: Ord a => [[a]] -> [a]
-rank = map snd . result . map head
-
-winner :: Ord a => [[a]] -> a
-winner bs = case rank (rmempty bs) of
-                [c]    -> c
-                (c:cs) -> winner (elim c bs)
-
--- WORK
-
-getRank = rank (map fst votes)
-
--- main = do
---     let firstWinner = winner (map fst votes)
---     print firstWinner
---     let currRank = rank (map fst votes)
---     print currRank
---     let flipper = reverse (rank (map fst votes))
---     print flipper
---     let actualWinner = head flipper
---     print actualWinner
-
-elim :: Eq a => a -> [[a]] -> [[a]]
-elim x = map (filter (/= x))
 
 firstPref :: [([String], Int)] -> [(String, Int)]
 firstPref xs = [( head (fst x), snd x)  | x <- xs]
@@ -131,16 +104,22 @@ addWeights xs = [( fst (head x), sum [snd y | y <- x ]) | x <- groupCand xs]
 sortByWeight :: Ord b => [(a, b)] -> [(a, b)]
 sortByWeight = sortBy (flip compare `on` snd)
 
+sortedVotes = sortByWeight (addWeights votes)
+
 elimCand :: String -> [([String], Int)] -> [([String], Int)]
 elimCand cand [] = []
 elimCand cand (v:vs) = (filter (/= cand) (fst v), snd v ) : elimCand cand vs
 
-sortedVotes = sortByWeight (addWeights votes)
-
 firstElected = fst (head sortedVotes)
 
--- If -1 that means we have an elected candidate
--- if it was 0 that means we have to eleminate
+newVotes = elimCand firstElected votes
+
 decide x
     | x >= quota = -1
     | otherwise = 0
+
+doCounts :: [([String], Int)] -> [String] -> [String]
+
+-- main = do
+
+-- PUT THE QUOTA ON THE ELECTED AS ITS WEIGHT
