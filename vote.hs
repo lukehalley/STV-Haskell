@@ -118,7 +118,12 @@ decide x
     | x >= quota = -1
     | otherwise = 0
 
-doCounts :: [([String], Int)] -> [String] -> [String]
+--          |votes                 |elected      |eliminated   |running      |seats |outcome
+doCounts :: [([String], Int)]  ->  [String]  ->  [String]  ->  [String]  ->  Int -> [String]
+doCounts [([], weight)] [] [] [] seats = []
+doCounts votes elected eliminated running seats =
+                                            | (length elected) + (length running) >= seats = -1
+                                            | otherwise = 0
 
 -- main = do
 
