@@ -118,13 +118,19 @@ decide x
     | x >= quota = -1
     | otherwise = 0
 
+-- --          |votes                 |elected      |eliminated   |running      |seats |outcome
+-- doCounts :: [([String], Int)]  ->  [String]  ->  [String]  ->  [String]  ->  Int -> [String]
+-- doCounts [([], weight)] [] [] [] seats = []
+-- doCounts votes elected eliminated running seats =
+--                                             | (length elected) + (length running) >= seats = []
+--                                             | otherwise = []
+
+
 --          |votes                 |elected      |eliminated   |running      |seats |outcome
 doCounts :: [([String], Int)]  ->  [String]  ->  [String]  ->  [String]  ->  Int -> [String]
 doCounts [([], weight)] [] [] [] seats = []
-doCounts votes elected eliminated running seats =
-                                            | (length elected) + (length running) >= seats = -1
-                                            | otherwise = 0
-
--- main = do
+doCounts votes elected eliminated running seats = if length elected + length running >= seats
+                                                    then ["Were Done"]
+                                                    else ["Were Not Done"]
 
 -- PUT THE QUOTA ON THE ELECTED AS ITS WEIGHT
