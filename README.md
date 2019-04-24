@@ -13,6 +13,6 @@ where:
 - votes: is the list of votes (described above) which the candidates will be picked from.
 - 3: the number of available seats.
 
-after running the above, the three candidates which where elected will be displayed:
+after running the above, the three candidates which where elected will be displayed **in the order they were elected in**:
 
 ![image](https://user-images.githubusercontent.com/5617407/57231540-99965800-7012-11e9-8a8b-b5beb450c5a1.png)
