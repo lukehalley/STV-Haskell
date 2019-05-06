@@ -8,6 +8,7 @@ A list (*votes*) of Tuples which contain Tuples with the following = [a list of 
 To get the election results fun the following in GHCI:
 
 `runElection votes 3`
+
 where:
 - runElection: the main function whihc runs the voting system.
 - votes: is the list of votes (described above) which the candidates will be picked from.
